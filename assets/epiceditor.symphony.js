@@ -1,8 +1,8 @@
-/*global EpicEditor marked */
+/* global Symphony, EpicEditor, marked */
 
-jQuery(document).on('ready', function () {
-  var $ = jQuery;
+jQuery(function ($) {
   var editors = [];
+  var formEl = Symphony.Elements.contents.find('form').first();
   var fields = $('.field').filter(function (i, el) {
     return $(el).find('textarea').hasClass('markdown');
   });
@@ -22,35 +22,40 @@ jQuery(document).on('ready', function () {
     el.append(container);
 
     var editor = new EpicEditor({
-        container: container[0]
-      , basePath: '/extensions/epiceditor/assets/epiceditor'
-      , clientSideStorage: false
-      , localStorageName: 'epiceditor'
-      , parser: marked
-      , file: {
-            name: 'epiceditor'
-          , defaultContent: ''
-          , autoSave: 100
-        }
-      , theme: {
-            base:     '/../epiceditor.symphony.base.css'
-          , preview:  '/../epiceditor.symphony.preview.css'
-          , editor:   '/../epiceditor.symphony.editor.css'
-        }
-      , focusOnLoad: false
-      , shortcut: {
-            modifier: 18
-          , fullscreen: 70
-          , preview: 80
-          , edit: 79
-        }
+      container: container[0],
+      basePath: '/extensions/epiceditor/assets/epiceditor',
+      clientSideStorage: false,
+      localStorageName: 'epiceditor',
+      parser: marked,
+      file: {
+        name: 'epiceditor',
+        defaultContent: '',
+        autoSave: 100,
+      },
+      theme: {
+        base:     '/../epiceditor.symphony.base.css',
+        preview:  '/../epiceditor.symphony.preview.css',
+        editor:   '/../epiceditor.symphony.editor.css',
+      },
+      focusOnLoad: false,
+      shortcut: {
+        modifier: 18,
+        fullscreen: 70,
+        preview: 80,
+        edit: 79,
+      }
     });
 
+    editor.on('reflow', function () {
+      var formElWidth = formEl.width();
+      $([editor.iframeElement, editor.editorIframe, editor.previewerIframe]).each(function (i, el) {
+        $(el).width(formElWidth);
+      });
+    });
 
     editor.on('load', function () {
       var preview = $(editor.previewerIframeDocument.body);
-      var editord = $(editor.editorIframeDocument.body);
-      preview.on('click', function (e) {
+      preview.on('click', function () {
         editor.edit();
       });
 
@@ -59,7 +64,7 @@ jQuery(document).on('ready', function () {
       });
 
       editor.on('fullscreenexit', function () {
-        preview.on('click', function (e) {
+        preview.on('click', function () {
           editor.edit();
         });
       });
@@ -74,10 +79,9 @@ jQuery(document).on('ready', function () {
     editor.importFile('symphony.epiceditor.contents', textarea.val());
 
     editors.push({
-        el: el
-      , textarea: textarea
-      , editor: editor
+      el: el,
+      textarea: textarea,
+      editor: editor,
     });    
   });
 });
-
