@@ -47,9 +47,8 @@ jQuery(function ($) {
     });
 
     editor.on('reflow', function () {
-      var formElWidth = formEl.width();
       $([editor.iframeElement, editor.editorIframe, editor.previewerIframe]).each(function (i, el) {
-        $(el).width(formElWidth);
+        $(el).width('100%');
       });
     });
 
@@ -86,3 +85,4 @@ jQuery(function ($) {
     });    
   });
 });
+
