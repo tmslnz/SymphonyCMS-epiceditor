@@ -64,6 +64,7 @@ jQuery(function ($) {
       });
 
       editor.on('fullscreenexit', function () {
+        $(editor.element).width('auto');
         preview.on('click', function () {
           editor.edit();
         });
